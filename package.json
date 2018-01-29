@@ -1,0 +1,18 @@
+{
+  "name": "callbag-from-event",
+  "version": "1.0.0",
+  "description": "Create a callbag listenable source from events on a DOM node",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/staltz/callbag-from-event.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "author": "staltz.com",
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^4.8.0"
+  }
+}
