@@ -1,6 +1,6 @@
 {
   "name": "callbag-from-event",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Create a callbag listenable source from events on a DOM node",
   "repository": {
     "type": "git",
