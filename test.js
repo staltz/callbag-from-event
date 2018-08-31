@@ -1,9 +1,8 @@
 const test = require('tape');
 const fromEvent = require('./index');
 
-test('it converts from (fake) DOM node events', (t) => {
-  t.plan(14);
-  const elem = {
+function getElement(t) {
+  return {
     added: false,
     id: null,
 
@@ -19,9 +18,13 @@ test('it converts from (fake) DOM node events', (t) => {
       this.added = false;
       clearInterval(this.id);
     }
-  }
+  };
+}
 
-  const source = fromEvent(elem, 'click');
+test('it converts from (fake) DOM node events', (t) => {
+  t.plan(18);
+
+  const source = fromEvent(getElement(t), 'click');
 
   const downwardsExpectedType = [
     [0, 'function'],
@@ -36,6 +39,7 @@ test('it converts from (fake) DOM node events', (t) => {
     let talkback;
     return (type, data) => {
       const et = downwardsExpectedType.shift();
+      t.ok(et, 'downwards call was expected');
       t.equals(type, et[0], 'downwards type is expected: ' + et[0]);
       t.equals(typeof data, et[1], 'downwards data type is expected: ' + et[1]);
       if (type === 0) {
@@ -60,3 +64,37 @@ test('it converts from (fake) DOM node events', (t) => {
   }, 700);
 });
 
+test('it handles the sink immediately ending', (t) => {
+  t.plan(6);
+
+  const source = fromEvent(getElement(t), 'click');
+
+  const downwardsExpectedType = [
+    [0, 'function']
+  ];
+
+  function makeSink(type, data) {
+    let talkback;
+    return (type, data) => {
+      const et = downwardsExpectedType.shift();
+      t.ok(et, 'downwards call was expected');
+      t.equals(type, et[0], 'downwards type is expected: ' + et[0]);
+      t.equals(typeof data, et[1], 'downwards data type is expected: ' + et[1]);
+
+      if (type === 0) {
+        talkback = data;
+        talkback(2);  // Immediately end.
+      } else {
+        t.fail('incorrectly written test, this should never be called');
+      }
+    };
+  }
+
+  const sink = makeSink();
+  source(0, sink);
+
+  setTimeout(() => {
+    t.pass('nothing else happens after dispose()');
+    t.end();
+  }, 700);
+});
