@@ -1,3 +1,7 @@
 import { Source } from 'callbag'
 
-export default function fromEvent(node: EventTarget, name: string): Source<Event>;
+export default function fromEvent<T extends Event = Event>(
+  node: EventTarget,
+  name: string,
+  options?: boolean | AddEventListenerOptions
+): Source<T>;
