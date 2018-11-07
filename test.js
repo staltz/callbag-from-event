@@ -1,5 +1,5 @@
 const test = require('tape');
-const fromEvent = require('./index');
+const fromEvent = require('.');
 
 test('it converts from (fake) DOM node events', (t) => {
   t.plan(14);

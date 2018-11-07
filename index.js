@@ -18,4 +18,4 @@ const fromEvent = (node, name) => (start, sink) => {
   node.addEventListener(name, handler);
 };
 
-module.exports = fromEvent;
+export default fromEvent;
