@@ -160,3 +160,49 @@ test('immediately terminating sink doesn\'t receive immediately emitted data', (
     t.end();
   }, 700);
 });
+
+test('it adds & removes listener with passed in options', (t) => {
+  t.plan(8);
+  const inputOptions = { passive: true }
+  const elem = {
+    addEventListener: (name, listener, options) => {
+      t.equals(options, inputOptions)
+      let i = 0;
+      this.id = setInterval(() => listener((++i)*10));
+    },
+     removeEventListener: (name, listener, options) => {
+      t.equals(options, inputOptions)
+      clearInterval(this.id);
+    }
+  }
+   const source = fromEvent(elem, 'click', inputOptions);
+   const downwardsExpectedType = [
+    [0, 'function'],
+    [1, 'number'],
+  ];
+   const downwardsExpected = [10];
+   function makeSink(type, data) {
+    let talkback;
+    return (type, data) => {
+      const et = downwardsExpectedType.shift();
+      t.equals(type, et[0], 'downwards type is expected: ' + et[0]);
+      t.equals(typeof data, et[1], 'downwards data type is expected: ' + et[1]);
+      if (type === 0) {
+        talkback = data;
+      }
+      if (type === 1) {
+        const e = downwardsExpected.shift();
+        t.equals(data, e, 'downwards data is expected: ' + e);
+      }
+      if (downwardsExpected.length === 0) {
+        talkback(2);
+      }
+    };
+  }
+   const sink = makeSink();
+  source(0, sink);
+   setTimeout(() => {
+    t.pass('nothing else happens after dispose()');
+    t.end();
+  }, 700);
+});
