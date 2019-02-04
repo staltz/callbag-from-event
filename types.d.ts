@@ -1,7 +1,7 @@
 import { Source } from 'callbag'
 
-export default function fromEvent<T extends Event = Event>(
+export default function fromEvent<T extends keyof HTMLElementEventMap>(
   node: EventTarget,
-  name: string,
+  name: T,
   options?: boolean | AddEventListenerOptions
-): Source<T>;
+): Source<HTMLElementEventMap[T]>;
