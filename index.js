@@ -10,14 +10,18 @@ const fromEvent = (node, name, options) => (start, sink) => {
       return;
     }
     disposed = true;
-    node.removeEventListener(name, handler, options);
+    if (node.removeEventListener) node.removeEventListener(name, handler, options);
+    else if (node.removeListener) node.removeListener(name, handler);
+    else throw new Error('cannot remove listener from node. No method found.');
   });
 
   if (disposed) {
     return;
   }
 
-  node.addEventListener(name, handler, options);
+  if (node.addEventListener) node.addEventListener(name, handler, options);
+  else if (node.addListener) node.addListener(name, handler);
+  else throw new Error('cannot add listener to node. No method found.');
 };
 
 export default fromEvent;
