@@ -1,6 +1,6 @@
 # callbag-from-event
 
-Create a callbag listenable source from events on a DOM node.
+Create a callbag listenable source from events on a DOM node or a NodeJS Event Emitter.
 
 `npm install callbag-from-event`
 
